@@ -1,6 +1,6 @@
 /*----------------------------------------------
 Programmer: Alberto Bobadilla (labigm@gmail.com)
-Date: 2017/05
+Date: 2017/06
 ----------------------------------------------*/
 #ifndef __SIMPLEXSYSTEM_H_
 #define __SIMPLEXSYSTEM_H_
@@ -11,13 +11,14 @@ Date: 2017/05
 namespace Simplex
 {
 
-//System Class
+//System singleton
 class SimplexDLL SystemSingleton
 {
-	bool m_bWindowFullscreen = false; // Window Fullscreen
-	bool m_bWindowBorderless = false; // Window Borderless
-	bool m_bMultithreaded = false; // Experimental: mutithreaded system
-	bool m_bConsoleWindow = false; // Experimental: Console window init
+	static SystemSingleton* m_pInstance; // Singleton
+
+	bool m_bWindowFullscreen = false; // Is window Fullscreen?
+	bool m_bWindowBorderless = false; // Is window Borderless?
+	bool m_bConsoleWindow = false; // Using console Window?
 
 	int m_nWindowWidth = 1280; // Window width
 	int m_nWindowHeight = 720; // Window height
@@ -25,19 +26,15 @@ class SimplexDLL SystemSingleton
 	int m_nWindowY = 0; // Window Position Y
 
 	int m_nFPS = 60; //Frames per Second
-	uint m_uMaxFPS = 120; //Frames per Second
-	uint m_uFrameCount = 0; //Frames Passed
 
-	static SystemSingleton* m_pInstance; // Singleton
+	uint m_uMaxFPS = 120; //Maximum Frames per Second
 
 	String m_sWindowName = "Simplex - Window"; // Window Name
-	String m_sAppName = "Application";//Name of the Application
-
-	DWORD m_dTimerStart = 0; //Start time of the program
-	DWORD m_dStartingTime = 0; //Start time of the program
-	DWORD m_dLastFPS = 0; //Last time the time was called
-
-	std::vector<DWORD> m_lClock;//clocks list
+	String m_sAppName = "";//Name of the Application
+	
+	std::vector<DWORD> m_clockList;//clocks list
+	std::vector<DWORD> m_deltaList;//deltas list
+	std::vector<float> m_countdownList;//countdown list
 	
 public:
 	Folder* m_pFolder; //Folder that contains the address of resources
@@ -73,8 +70,7 @@ public:
 	bool IsWindowBorderless(void);
 	/*
 	USAGE: Will set the window to fullscreen mode in the desired resolution
-	ARGUMENTS:
-		BTO_RESOLUTIONS a_Resolution = BTO_RESOLUTIONS::HD_1280X720 -> resolution of the screen
+	ARGUMENTS: BTO_RESOLUTIONS a_Resolution = BTO_RESOLUTIONS::HD_1280X720 -> resolution of the screen
 	OUTPUT: ---
 	*/
 	void SetWindowFullscreen(bool a_bFullScreen);
@@ -179,18 +175,6 @@ public:
 	*/
 	uint GetMaxFrameRate(void);
 	/*
-	USAGE:Sets the system to be multi-threaded <<<EXPERIMENTAL>>>
-	ARGUMENTS:
-	OUTPUT: ---
-	*/
-	void SetThreaded(bool a_bMultithreaded);
-	/*
-	USAGE: Asks the system if its multi-threaded
-	ARGUMENTS: ---
-	OUTPUT:
-	*/
-	bool GetThreaded(void);
-	/*
 	USAGE: Asks for the value of m_bConsole
 	ARGUMENTS: ---
 	OUTPUT:
@@ -223,30 +207,50 @@ public:
 	void Update(void);
 	/*
 	USAGE: Starts a time count for the specified clock
-	ARGUMENTS:
+	ARGUMENTS: uint a_nClock -> clock to query
 	OUTPUT: ---
 	*/
-	void StartClock(uint a_nClock = 0);
+	void StartClock(uint a_nClock);
 	/*
-	USAGE: Gets the time difference between the last time this method was called for this particular clock
-	ARGUMENTS:
+	USAGE: Gets the time difference between the last time this method was called or clock was created
+	for this particular clock, need to generate a clock with GenClock first
+	ARGUMENTS: uint a_nClock -> clock to query
 	OUTPUT:
 	*/
-	double GetDeltaTime(uint a_nClock = 0);
+	float GetDeltaTime(uint a_nClock);
 	/*
-	USAGE: Adds a clock to the list starts it with current time and return said clock's index
+	USAGE: Adds a clock to the list starts it with current time and return said clock's index,
+	need to generate a clock with GenClock first
 	ARGUMENTS: ---
 	OUTPUT: uint -> index of the new clock;
 	*/
 	uint GenClock(void);
 	/*
-	USAGE: returns true when the count is up, only one clock available
-	ARGUMENTS:
-		float a_fTime -> total time to countdown
-		bool a_bRepeat = false -> repeat the count once its done?
-	OUTPUT:
+	USAGE: Gets the time since this clock was created
+	ARGUMENTS: uint a_nClock -> clock to query
+	OUTPUT: ---
 	*/
-	bool CountDown(float a_fTime, bool a_bRepeat = false);
+	float GetTimeSinceStart(uint a_nClock);
+	/*
+	USAGE: Resets the specified clock to the current time, need to generate a clock with GenClock first
+	ARGUMENTS: uint a_nClock -> clock to query
+	OUTPUT: ---
+	*/
+	void ResetClock(uint a_nClock);
+	/*
+	USAGE: Generates a countdown clock
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
+	void StartTimerOnClock(float a_fTime, uint a_nClock);
+	/*
+	USAGE: Checks if the timer has finalized running, needs to 
+		call StartTimerOnClock() first
+	ARGUMENTS: uint a_nClock -> queried clock
+	OUTPUT: is the clock done the countdown? will return true if 
+		clock does not exist
+	*/
+	bool IsTimerDone(uint a_nClock);
 		
 private:
 	/*
@@ -287,11 +291,12 @@ private:
 	void Init(void);
 };
 
-}
+} //namespace Simplex
 #include "Simplex\System\GLSystem.h"
+
+#endif //__SIMPLEXSYSTEM_H_
 /*
-USAGE: 
+USAGE:
 ARGUMENTS: ---
 OUTPUT: ---
 */
-#endif //__SystemSingleton_H__

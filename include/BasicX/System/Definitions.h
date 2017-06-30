@@ -43,14 +43,14 @@ Date: 2017/05
 
 namespace BasicX
 {
-typedef std::string String;
-typedef glm::vec2 vector2;
-typedef glm::vec3 vector3;
-typedef glm::vec4 vector4;
-typedef glm::mat3 matrix3;
-typedef glm::mat4 matrix4;
-typedef unsigned int uint;
-typedef glm::quat quaternion;
+	typedef unsigned int uint;
+	typedef std::string String;
+	typedef glm::vec2 vector2;
+	typedef glm::vec3 vector3;
+	typedef glm::vec4 vector4;
+	typedef glm::mat3 matrix3;
+	typedef glm::mat4 matrix4;
+	typedef glm::quat quaternion;
 /*
 USAGE: will safely delete the input pointer and initialize it to nullptr, DOES NOT WORK WITH POINTER ARRAY
 */
@@ -86,6 +86,8 @@ USAGE: will safely delete the input pointer and initialize it to nullptr, DOES N
 #define C_BLUE vector3(0.0f, 0.0f, 1.0f)
 #define C_BLUE_CORNFLOWER vector3(0.4f, 0.6f, 0.9f)
 #define C_CYAN vector3(0.0f,1.0f,1.0f)
+
+#define C_INDIGO vector3(0.30f, 0.0f, 0.52)
 
 #define C_YELLOW vector3(1.0f, 1.0f, 0.0f)
 #define C_ORANGE vector3(1.0f,0.5f,0.0f)

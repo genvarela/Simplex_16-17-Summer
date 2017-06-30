@@ -1,4 +1,5 @@
 #include "AppClass.h"
+using namespace Simplex;
 ImGuiObject Application::gui;
 #define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
 struct ConsoleAndLog
@@ -489,9 +490,10 @@ void Application::NewFrame()
 	height > 0 ? ((float)m_viewport[3] / height) : 0);
 	*/
 	// Setup time step
-	double dDelta = m_pSystem->GetDeltaTime(gui.m_nClock);
-	io.DeltaTime = static_cast<float>(dDelta);
-	gui.m_dTimeTotal += dDelta;
+	float fDelta = m_pSystem->GetDeltaTime(gui.m_nClock);
+	io.DeltaTime = fDelta;
+	gui.m_dTimeTotal += fDelta;
+
 	
 	// Start the frame
 	ImGui::NewFrame();
@@ -531,7 +533,6 @@ void Application::InitIMGUI(void)
 
 	//Setup clock
 	gui.m_nClock = m_pSystem->GenClock();
-	m_pSystem->StartClock(gui.m_nClock);
 }
 void Application::ShutdownGUI(void)
 {
