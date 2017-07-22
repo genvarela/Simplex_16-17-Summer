@@ -287,6 +287,56 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	(eSATResults::SAT_NONE has a value of 0)
 	*/
 
+	/* Tests:
+	SAT_AX
+	SAT_AY
+	SAT_AZ
+
+	SAT_BX
+	SAT_BY
+	SAT_BZ
+
+	SAT_AXxBX
+	SAT_AXxBY
+	SAT_AXxBZ
+
+	SAT_AYxBX
+	SAT_AYxBY
+	SAT_AYxBZ
+
+	SAT_AZxBX
+	SAT_AZxBY
+	SAT_AZxBZ */
+
+	/* 
+	TestCases[15] = Array of the test cases listed above;
+
+	TestAxis(vector3 axis)
+	{
+	vec3 normal = normal of the axis being tested;
+	get the min+max vertices and project them onto the normal
+	check if mins+maxes for the objects overlap
+		if (A_MaxX > B_MinX || A_MinX < B_MaxX ||  A_MaxY > B_MinY || A_MinY < B_MaxY || A_MaxZ > B_MinZ || A_MinZ < B_MaxZ) {
+		// if A_MaxX is smaller than B_MinX, it means A is to the left of B
+		// if A_MinX is bigger than B_MaxX, it means A is to the right of B
+		// Replace with Y values for above and below
+		// Replace with Z values for front and back
+
+		return the collision  //there is a collision- at least one of these tests came back true
+			
+		else return eSATResults::SAT_NONE; //there is no collision on this edge, which means there's a separating axis
+		}
+	for ( int i=0; i<15; i++) //loop through test cases array
+	{
+		TestAxis
+	}
+
+	}
+
+
+	*/
+	
+
 	//there is no axis test that separates this two objects
 	return eSATResults::SAT_NONE;
 }
